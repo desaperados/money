@@ -125,11 +125,20 @@ class Money
   end
 
   # Money.ca_dollar(100).to_s => "1.00"
+  #
+  # Locale support:
+  #   If
+  #    number.format.separator = ","
+  #    number.format.separator = "."
+  #  Then
+  #    Money.ca_dollar(100).to_s => "1,00"
+  #
   def to_s(show_precision = precision)
+    separator = I18n.translate("number.format.separator", :default => ".")
     if show_precision > 0
-      sprintf("%.#{show_precision}f", to_f  )
+      sprintf("%.#{show_precision}f", to_f  ).gsub('.', separator)
     else
-      sprintf("%d", cents.to_f / 10 ** (precision - show_precision)  )
+      sprintf("%d", cents.to_f / 10 ** (precision - show_precision)  ).gsub('.', separator)
     end
   end
   

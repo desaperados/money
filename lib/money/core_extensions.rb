@@ -33,20 +33,31 @@ class String
   #
   #   '3.479'.to_money  # => #<Money @cents=3479 @precision=3>
   #
+  # Locale support:
+  #   If
+  #    number.format.separator = ","
+  #    number.format.separator = "."
+  #  Then
+  #    '100,37'.to_money #=> #<Money @cents=10037>
+  #
   def to_money(precision = nil)
     # Get the currency
     matches = scan /([A-Z]{2,3})/ 
     currency = matches[0] ? matches[0][0] : Money.default_currency
-    
+
+    separator = I18n.translate("number.format.separator", :default => ".")
+    delimiter = I18n.translate("number.format.delimiter", :default => ",")
+
     if !precision
-      precision = scan(/\.(\d+)/).to_s.length
+      precision = scan(Regexp.new("\\#{separator}(\\d+)")).to_s.length
       precision = 2 if precision < 2
     end
-
+    
     # Get the cents amount
-    str = self =~ /^\./ ? "0#{self}" : self
-    matches = str.scan /(\-?[\d,]+(\.(\d+))?)/
-    cents = matches[0] ? (matches[0][0].gsub(',', '').to_f * 10**precision) : 0
+    str = self =~ /^(\.|,)/ ? "0#{self}" : self
+    matches = str.scan(Regexp.new("(\\-?[\\d\\#{delimiter}]+(\\#{separator}(\\d+))?)"))
+    cents = matches[0] ? (matches[0][0].gsub(delimiter, '').gsub(',','.').to_f * 10**precision) : 0
+
     Money.new(cents, currency, precision)
   end
 end

@@ -1,3 +1,15 @@
+== Changes in this fork
+
+ Locale support:
+   If
+    number.format.separator = "," (I18n)
+    number.format.separator = "." (I18n)
+  Then
+    Money.ca_dollar(100).to_s => "1,00"
+    '100,37'.to_money #=> #<Money @cents=10037>
+
+Wen using an input field for money, it shows the money in your locale, and it accepts money in your locale.
+
 == Money
 
 This library makes it easier to deal with Money values, storing them as integers to avoid floating-point math errors.
