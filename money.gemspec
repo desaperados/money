@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.has_rdoc = true
 
   s.files = %w(
-    README
+    README.rdoc
     MIT-LICENSE
     lib/money.rb
     lib/money/core_extensions.rb
